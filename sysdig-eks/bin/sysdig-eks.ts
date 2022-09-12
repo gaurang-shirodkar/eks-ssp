@@ -1,6 +1,11 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import * as blueprints from '@aws-quickstart/eks-blueprints';
+// import { KubernetesVersion } from 'aws-cdk-lib/aws-eks';
+import * as eks from 'aws-cdk-lib/aws-eks';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+
+
 
 const app = new cdk.App();
 const account = '712329029476';
@@ -19,8 +24,22 @@ const addOns: Array<blueprints.ClusterAddOn> = [
     // new blueprints.addons.XrayAddOn()
 ];
 
+
+const clusterProvider = new blueprints.GenericClusterProvider({
+  version: eks.KubernetesVersion.V1_21,
+  managedNodeGroups: [
+      {
+          id: "mng-ondemand",
+          amiType: eks.NodegroupAmiType.AL2_X86_64,
+          instanceTypes: [new ec2.InstanceType('m5.2xlarge')],
+          minSize: 1,
+          maxSize: 2,
+          desiredSize: 2
+      }],
+    })
 blueprints.EksBlueprint.builder()
     .account(account)
     .region(region)
     .addOns(...addOns)
-    .build(app, 'eks-blueprint');
+    .clusterProvider(clusterProvider)
+    .build(app, 'eks-blueprint')
