@@ -31,7 +31,7 @@ const clusterProvider = new blueprints.GenericClusterProvider({
       {
           id: "mng-ondemand",
           amiType: eks.NodegroupAmiType.AL2_X86_64,
-          instanceTypes: [new ec2.InstanceType('m5.2xlarge')],
+          instanceTypes: [new ec2.InstanceType('c5.xlarge')],
           minSize: 1,
           maxSize: 2,
           desiredSize: 2
